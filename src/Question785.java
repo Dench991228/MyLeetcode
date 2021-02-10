@@ -3,44 +3,38 @@ import com.sun.jmx.remote.internal.ArrayQueue;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 public class Question785 {
-    private boolean test(HashSet<Integer> zero, HashSet<Integer> one, int cur_pos, int cur_group, int[][] graph, ArrayDeque<Integer> nodes, ArrayDeque<Integer> group){
-        int i, len = graph[cur_pos].length;
-        for(i=0;i<len;i++){
-            int temp = graph[cur_pos][i];
-            if(cur_group==1&&one.contains(temp))return false;
-            else if(cur_group==0&&zero.contains(temp))return false;
-            else{
-                if(cur_group==0&&!one.contains(temp)){
-                    nodes.addLast(temp);
-                    group.addLast(1);
-                    one.add(temp);
-                }
-                else if(cur_group==1&&!zero.contains(temp)){
-                    nodes.addLast(temp);
-                    group.addLast(0);
-                    zero.add(temp);
+    /**
+     * 判断graph给出的图是不是二分图，使用广度优先遍历法，尝试给每一个节点一个组，看看行不行
+     * @param graph graph[i]表示与i节点相邻的点，边都是无向的
+     * */
+    public boolean isBipartite(int[][] graph) {
+        if(graph.length==2||graph.length==1)return true;
+        boolean[] visited = new boolean[graph.length];//用来记录各个节点是不是被遍历过了
+        boolean[] belonging = new boolean[graph.length];//用来记录各个节点属于哪一个部分
+        for(int i=0; i<graph.length;i++){
+            if(!visited[i]){//未被访问，开始广度优先遍历
+                LinkedList<Integer> queue = new LinkedList<>();
+                queue.addLast(i);
+                belonging[i] = false;
+                visited[i] = true;
+                while(!queue.isEmpty()){
+                    int current = queue.pollFirst();
+                    for(int t:graph[current]){
+                        if(visited[t]&&belonging[t]==belonging[current]){
+                            return false;
+                        }
+                        if(!visited[t]){
+                            queue.addLast(t);
+                            belonging[t] = !belonging[current];
+                            visited[t] = true;
+                        }
+                    }
                 }
             }
         }
         return true;
-    }
-    public boolean isBipartite(int[][] graph) {
-        if(graph.length==2)return true;
-        if(graph.length==1)return false;
-        HashSet<Integer> group_zero = new HashSet<>();
-        HashSet<Integer> group_one = new HashSet<>();
-        ArrayDeque<Integer> nodes = new ArrayDeque<>();
-        ArrayDeque<Integer> group = new ArrayDeque<>();
-        nodes.addLast(0);
-        group.addLast(0);
-        group_zero.add(0);
-        while(!nodes.isEmpty()){
-            int cur_pos = nodes.pollFirst();
-            int cur_group = group.pollFirst();
-            if(!test(group_zero,group_one,cur_pos,cur_group,graph,nodes,group))return false;
-        }
-        return group_one.size()+group_zero.size()==graph.length;
     }
 }
