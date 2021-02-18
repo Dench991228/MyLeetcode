@@ -1,7 +1,6 @@
-import java.util.HashMap;
 import java.util.LinkedList;
 
-public class Question227 {
+public class Question224 {
     class StringIter{
         String string;
         int pos;
@@ -45,8 +44,11 @@ public class Question227 {
                 int number = Integer.parseInt(element);
                 number_stack.addLast(number);
             }else{
-                if(element.charAt(0)=='+'||element.charAt(0)=='-'){
-                    while(!operand_stack.isEmpty()){
+                if(element.charAt(0)=='('){
+                    operand_stack.addLast(element.charAt(0));
+                }
+                else if(element.charAt(0)=='+'||element.charAt(0)=='-'){
+                    while(!operand_stack.isEmpty()&&operand_stack.peekLast()!='('){
                         int b = number_stack.pollLast();
                         int a = number_stack.pollLast();
                         char opr = operand_stack.pollLast();
@@ -67,8 +69,9 @@ public class Question227 {
                         }
                         number_stack.addLast(result);
                     }
-                }else{
-                    while(!operand_stack.isEmpty()&&(operand_stack.peekLast()!='-'&&operand_stack.peekLast()!='+')){
+                    operand_stack.addLast(element.charAt(0));
+                }else if(element.charAt(0)=='*'||element.charAt(0)=='/'){
+                    while(!operand_stack.isEmpty()&&(operand_stack.peekLast()!='-'&&operand_stack.peekLast()!='+')&&operand_stack.peekLast()!='('){
                         int b = number_stack.pollLast();
                         int a = number_stack.pollLast();
                         char opr = operand_stack.pollLast();
@@ -83,8 +86,32 @@ public class Question227 {
                         }
                         number_stack.addLast(result);
                     }
+                    operand_stack.addLast(element.charAt(0));
                 }
-                operand_stack.addLast(element.charAt(0));
+                else{//右括号的情况，不断弹栈，直到找出左括号
+                    while(!operand_stack.isEmpty()&&operand_stack.peekLast()!='('){
+                        int b = number_stack.pollLast();
+                        int a = number_stack.pollLast();
+                        char opr = operand_stack.pollLast();
+                        int result = 0;
+                        switch (opr){
+                            case '+':
+                                result = a+b;
+                                break;
+                            case '-':
+                                result = a-b;
+                                break;
+                            case '*':
+                                result = a*b;
+                                break;
+                            case '/':
+                                result = a/b;
+                                break;
+                        }
+                        number_stack.addLast(result);
+                    }
+                    operand_stack.pollLast();
+                }
             }
         }
         /*计算完成了，如果是只有一个数，那么operand_stack是空的，否则就是还剩最后一次运算*/
