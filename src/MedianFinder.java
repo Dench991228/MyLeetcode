@@ -2,6 +2,7 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class MedianFinder {
+
     /*big endian heap, containing numbers smaller than median*/
     private PriorityQueue<Integer> left_heap;
     /*little endian heap, containing numbers bigger equal than median*/
@@ -31,26 +32,33 @@ public class MedianFinder {
             if(num>=median){
                 right_heap.add(num);
             }else{
-                right_heap.add(left_heap.poll());
                 left_heap.add(num);
+                right_heap.add(left_heap.poll());
             }
             median = right_heap.peek();
         }else{// both heap has different number of elements
             if(num<median){
                 left_heap.add(num);
             }else{
-                left_heap.add(right_heap.poll());
                 right_heap.add(num);
+                left_heap.add(right_heap.poll());
             }
-            median = (left_heap.peek()+right_heap.peek())/2;
+            median = (1.0*left_heap.peek()+right_heap.peek())/2;
         }
+        //System.out.println(this);
     }
 
     public double findMedian() {
         return this.median;
     }
-
     public String toString(){
         return this.left_heap.toString()+this.right_heap.toString();
     }
 }
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder obj = new MedianFinder();
+ * obj.addNum(num);
+ * double param_2 = obj.findMedian();
+ */
