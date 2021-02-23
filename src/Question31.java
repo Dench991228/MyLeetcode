@@ -1,4 +1,4 @@
-class Solution {
+class Question31 {
     /* 内排序剩下的部分 */
     private void innerSortDecsendingArray(int[] nums, int startPos){
         int len = nums.length;
