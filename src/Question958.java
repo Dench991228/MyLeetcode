@@ -1,16 +1,5 @@
 import java.util.LinkedList;
 
-class TreeNode {
-      int val;
-      TreeNode left;
-      TreeNode right;
-      TreeNode(int x) { val = x; }
-      TreeNode(int val, TreeNode left, TreeNode right) {
-          this.val = val;
-          this.left = left;
-          this.right = right;
-      }
- }
 public class Question958 {
     /**
      * 判断一二搜索树是不是完全二叉树
